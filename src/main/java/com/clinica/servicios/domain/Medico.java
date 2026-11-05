@@ -14,6 +14,10 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
+/**
+ * Representa a un medico que atiende en la clinica.
+ * Sus datos se guardan en la tabla "medicos".
+ */
 @Entity
 @Table(name = "medicos")
 public class Medico {

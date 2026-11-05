@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Pantallas para listar, registrar, editar y eliminar medicos.
+ */
 @Controller
 @RequestMapping("/medicos")
 public class MedicoController {
@@ -26,9 +28,8 @@ public class MedicoController {
     }
 
     @GetMapping
-    public String listar(@RequestParam(required = false) String q, Model model) {
-        model.addAttribute("medicos", medicoService.listar(q));
-        model.addAttribute("q", q);
+    public String listar(Model model) {
+        model.addAttribute("medicos", medicoService.listar());
         return "medicos/list";
     }
 

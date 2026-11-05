@@ -6,67 +6,48 @@
 </head>
 <body>
 <section>
-    <div class="page-header">
+    <div class="cabecera-pagina">
         <div>
             <h1>Historial clinico</h1>
-            <p>Consulta las atenciones, diagnosticos y tratamientos registrados.</p>
+            <p class="texto-gris">Atenciones, diagnosticos y tratamientos registrados.</p>
         </div>
-        <div class="page-actions">
-            <a th:href="@{/historial/nuevo}" class="btn btn-primary">Registrar atencion</a>
+        <div class="acciones">
+            <a th:href="@{/historial/nuevo}" class="boton primario">Registrar atencion</a>
         </div>
     </div>
 
-    <form th:action="@{/historial}" method="get" class="filter-bar">
-        <input type="search" name="q" th:value="${q}" placeholder="Buscar por paciente, documento, medico o diagnostico">
-        <button type="submit" class="btn btn-secondary">Buscar</button>
-        <a th:href="@{/historial}" class="btn btn-ghost">Limpiar</a>
-    </form>
-
-    <div class="panel">
-        <div class="table-wrap" th:if="${!#lists.isEmpty(historiales)}">
-            <table class="table">
+    <div class="tarjeta" th:if="${!#lists.isEmpty(historiales)}">
+        <div class="tabla-contenedor">
+            <table class="tabla">
                 <thead>
                 <tr>
                     <th>Fecha</th>
                     <th>Paciente</th>
                     <th>Medico</th>
                     <th>Diagnostico</th>
-                    <th>Cita</th>
-                    <th class="actions-col">Acciones</th>
+                    <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="h : ${historiales}">
                     <td th:text="${h.fechaConsultaTexto}">Fecha</td>
-                    <td>
-                        <a th:href="@{/pacientes/{id}(id=${h.paciente.id})}" class="table-link"
-                           th:text="${h.paciente.nombreCompleto}">Paciente</a>
-                        <small class="block muted" th:text="${h.paciente.documento}">Documento</small>
-                    </td>
-                    <td>
-                        <span th:text="${h.medico.nombreCompleto}">Medico</span>
-                        <small class="block muted" th:text="${h.medico.especialidad}">Especialidad</small>
-                    </td>
+                    <td th:text="${h.paciente.nombreCompleto}">Paciente</td>
+                    <td th:text="${h.medico.nombreCompleto}">Medico</td>
                     <td th:text="${h.diagnosticoResumen}">Diagnostico</td>
-                    <td>
-                        <a th:if="${h.cita != null}" th:href="@{/citas/{id}(id=${h.cita.id})}" class="table-link"
-                           th:text="${h.cita.fechaHoraTexto}">Cita</a>
-                        <span th:if="${h.cita == null}" class="muted">Sin cita</span>
-                    </td>
-                    <td class="actions-col">
-                        <a th:href="@{/historial/{id}(id=${h.id})}" class="btn btn-sm btn-ghost">Ver</a>
-                        <a th:href="@{/historial/{id}/editar(id=${h.id})}" class="btn btn-sm btn-secondary">Editar</a>
-                        <a th:href="@{/recetas/nueva(historialId=${h.id})}" class="btn btn-sm btn-primary">Receta</a>
+                    <td class="celda-acciones">
+                        <a th:href="@{/historial/{id}(id=${h.id})}" class="boton pequeno">Ver</a>
+                        <a th:href="@{/historial/{id}/editar(id=${h.id})}" class="boton pequeno secundario">Editar</a>
+                        <a th:href="@{/recetas/nueva(historialId=${h.id})}" class="boton pequeno primario">Receta</a>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <div class="empty-state" th:if="${#lists.isEmpty(historiales)}">
-            <strong>No se encontraron registros</strong>
-            <p>Registra una atencion desde una cita o de forma directa.</p>
-            <a th:href="@{/historial/nuevo}" class="btn btn-primary">Registrar atencion</a>
-        </div>
+    </div>
+
+    <div class="vacio" th:if="${#lists.isEmpty(historiales)}">
+        <p>No hay atenciones registradas.</p>
+        <a th:href="@{/historial/nuevo}" class="boton primario">Registrar primera atencion</a>
     </div>
 </section>
 </body>

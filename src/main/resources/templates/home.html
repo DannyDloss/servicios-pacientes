@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::titulo}, ~{::section})}">
+<head>
+    <title th:fragment="titulo">Inicio</title>
+</head>
+<body>
+<section>
+    <h1>Sistema de gestion de clinica</h1>
+    <p class="texto-gris">
+        Desde este sistema se pueden administrar pacientes, medicos, citas,
+        historiales clinicos y recetas.
+    </p>
+
+    <div class="inicio">
+        <a class="tarjeta enlace-tarjeta" th:href="@{/pacientes}">
+            <strong>Pacientes</strong>
+            <span>Registrar y consultar los datos de los pacientes.</span>
+        </a>
+        <a class="tarjeta enlace-tarjeta" th:href="@{/medicos}">
+            <strong>Medicos</strong>
+            <span>Administrar los medicos y sus especialidades.</span>
+        </a>
+        <a class="tarjeta enlace-tarjeta" th:href="@{/citas}">
+            <strong>Citas</strong>
+            <span>Agendar y controlar las citas de atencion.</span>
+        </a>
+        <a class="tarjeta enlace-tarjeta" th:href="@{/historial}">
+            <strong>Historial clinico</strong>
+            <span>Registrar diagnosticos y tratamientos.</span>
+        </a>
+        <a class="tarjeta enlace-tarjeta" th:href="@{/recetas}">
+            <strong>Recetas</strong>
+            <span>Emitir recetas para los pacientes atendidos.</span>
+        </a>
+    </div>
+</section>
+</body>
+</html>

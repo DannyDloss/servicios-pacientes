@@ -22,6 +22,10 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Representa a un paciente registrado en la clinica.
+ * Sus datos se guardan en la tabla "pacientes".
+ */
 @Entity
 @Table(name = "pacientes")
 public class Paciente {

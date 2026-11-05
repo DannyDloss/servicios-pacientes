@@ -10,10 +10,12 @@ import com.clinica.servicios.repository.PacienteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Reglas de negocio para las citas.
+ */
 @Service
 public class CitaService {
 
@@ -30,21 +32,13 @@ public class CitaService {
     }
 
     @Transactional(readOnly = true)
-    public List<Cita> listar(LocalDate fecha, EstadoCita estado, Long medicoId) {
-        LocalDateTime desde = fecha == null ? null : fecha.atStartOfDay();
-        LocalDateTime hasta = fecha == null ? null : fecha.plusDays(1).atStartOfDay();
-        return citaRepository.buscar(estado, medicoId, desde, hasta);
+    public List<Cita> listar() {
+        return citaRepository.findAllByOrderByFechaHoraDesc();
     }
 
     @Transactional(readOnly = true)
     public List<Cita> listarPorPaciente(Long pacienteId) {
         return citaRepository.findByPacienteIdOrderByFechaHoraDesc(pacienteId);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Cita> proximas() {
-        return citaRepository.findTop5ByFechaHoraAfterAndEstadoOrderByFechaHoraAsc(
-                LocalDateTime.now(), EstadoCita.PROGRAMADA);
     }
 
     @Transactional(readOnly = true)
@@ -92,26 +86,15 @@ public class CitaService {
     }
 
     @Transactional
-    public Cita cambiarEstado(Long id, EstadoCita nuevoEstado) {
+    public void cancelar(Long id) {
         Cita cita = obtener(id);
-        if (cita.getEstado() == EstadoCita.ATENDIDA && nuevoEstado != EstadoCita.ATENDIDA) {
-            throw new BusinessException("Una cita atendida no puede cambiar de estado.");
+        if (cita.getEstado() == EstadoCita.ATENDIDA) {
+            throw new BusinessException("Una cita atendida no se puede cancelar.");
         }
-        if (cita.getEstado() == EstadoCita.CANCELADA && nuevoEstado == EstadoCita.ATENDIDA) {
-            throw new BusinessException("Una cita cancelada no puede marcarse como atendida.");
+        if (cita.getEstado() == EstadoCita.CANCELADA) {
+            throw new BusinessException("La cita ya esta cancelada.");
         }
-        cita.setEstado(nuevoEstado);
-        return citaRepository.save(cita);
-    }
-
-    @Transactional(readOnly = true)
-    public long contarHoy() {
-        LocalDateTime inicio = LocalDate.now().atStartOfDay();
-        return citaRepository.countByFechaHoraBetween(inicio, inicio.plusDays(1));
-    }
-
-    @Transactional(readOnly = true)
-    public long contarProgramadas() {
-        return citaRepository.countByEstado(EstadoCita.PROGRAMADA);
+        cita.setEstado(EstadoCita.CANCELADA);
+        citaRepository.save(cita);
     }
 }

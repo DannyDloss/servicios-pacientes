@@ -6,40 +6,43 @@
 </head>
 <body>
 <section>
-    <div class="page-header">
+    <div class="cabecera-pagina">
         <div>
             <h1 th:text="${modoEdicion} ? 'Editar historial' : 'Registrar atencion'">Historial</h1>
-            <p>Registra los signos vitales, el diagnostico y el tratamiento de la consulta.</p>
+            <p class="texto-gris">Registre el diagnostico, el tratamiento y los signos vitales.</p>
         </div>
-        <div class="page-actions">
-            <a th:href="@{/historial}" class="btn btn-ghost">Volver al historial</a>
+        <div class="acciones">
+            <a th:href="@{/historial}" class="boton">Volver</a>
         </div>
     </div>
 
-    <form th:action="${modoEdicion} ? @{/historial/{id}(id=${historial.id})} : @{/historial}"
-          th:object="${historial}" method="post" class="form-card">
+    <form class="formulario"
+          th:action="${modoEdicion} ? @{/historial/{id}(id=${historial.id})} : @{/historial}"
+          th:object="${historial}" method="post">
+
         <input type="hidden" th:field="*{citaSeleccionadaId}">
 
-        <div class="form-section">
-            <h2>Contexto de la atencion</h2>
-            <div class="alert alert-error" th:if="${#fields.hasGlobalErrors()}">
+        <div class="seccion-form">
+            <h2>Paciente y medico</h2>
+
+            <div class="mensaje error" th:if="${#fields.hasGlobalErrors()}">
                 <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Error</p>
             </div>
 
-            <div th:if="${cita != null}" class="summary-box">
+            <div class="resumen" th:if="${cita != null}">
                 <p><strong>Cita:</strong> <span th:text="${cita.fechaHoraTexto}">-</span></p>
                 <p><strong>Paciente:</strong> <span th:text="${cita.paciente.nombreCompleto}">-</span></p>
                 <p><strong>Medico:</strong> <span th:text="${cita.medico.nombreCompleto}">-</span></p>
-                <p><strong>Motivo de la cita:</strong> <span th:text="${cita.motivo}">-</span></p>
+                <p><strong>Motivo:</strong> <span th:text="${cita.motivo}">-</span></p>
             </div>
 
-            <div th:if="${modoEdicion and cita == null}" class="summary-box">
+            <div class="resumen" th:if="${modoEdicion and cita == null}">
                 <p><strong>Paciente:</strong> <span th:text="${historial.paciente.nombreCompleto}">-</span></p>
                 <p><strong>Medico:</strong> <span th:text="${historial.medico.nombreCompleto}">-</span></p>
             </div>
 
-            <div class="form-grid" th:if="${!modoEdicion and cita == null}">
-                <div class="field">
+            <div class="fila" th:if="${!modoEdicion and cita == null}">
+                <div class="campo">
                     <label for="pacienteSeleccionadoId">Paciente *</label>
                     <select id="pacienteSeleccionadoId" th:field="*{pacienteSeleccionadoId}">
                         <option value="">Seleccione un paciente</option>
@@ -47,7 +50,7 @@
                                 th:text="${p.nombreCompleto + ' - ' + p.documento}"></option>
                     </select>
                 </div>
-                <div class="field">
+                <div class="campo">
                     <label for="medicoSeleccionadoId">Medico *</label>
                     <select id="medicoSeleccionadoId" th:field="*{medicoSeleccionadoId}">
                         <option value="">Seleccione un medico</option>
@@ -57,81 +60,79 @@
                 </div>
             </div>
 
-            <div class="form-grid" th:if="${modoEdicion and cita == null}">
-                <div class="field">
+            <div class="fila" th:if="${modoEdicion and cita == null}">
+                <div class="campo">
                     <label>Paciente</label>
                     <input type="text" th:value="${historial.paciente.nombreCompleto}" disabled>
                 </div>
-                <div class="field">
+                <div class="campo">
                     <label>Medico</label>
                     <input type="text" th:value="${historial.medico.nombreCompleto}" disabled>
                 </div>
             </div>
         </div>
 
-        <div class="form-section">
+        <div class="seccion-form">
             <h2>Consulta</h2>
-            <div class="form-grid">
-                <div class="field">
-                    <label for="fechaConsulta">Fecha y hora de consulta *</label>
+            <div class="fila">
+                <div class="campo">
+                    <label for="fechaConsulta">Fecha y hora *</label>
                     <input type="datetime-local" id="fechaConsulta" th:field="*{fechaConsulta}" step="60">
-                    <p class="field-error" th:if="${#fields.hasErrors('fechaConsulta')}" th:errors="*{fechaConsulta}"></p>
+                    <p class="error" th:if="${#fields.hasErrors('fechaConsulta')}" th:errors="*{fechaConsulta}"></p>
                 </div>
-                <div class="field">
-                    <label for="motivoConsulta">Motivo de consulta *</label>
-                    <input type="text" id="motivoConsulta" th:field="*{motivoConsulta}" maxlength="255"
-                           placeholder="Motivo de la atencion">
-                    <p class="field-error" th:if="${#fields.hasErrors('motivoConsulta')}" th:errors="*{motivoConsulta}"></p>
+                <div class="campo">
+                    <label for="motivoConsulta">Motivo *</label>
+                    <input type="text" id="motivoConsulta" th:field="*{motivoConsulta}" maxlength="255">
+                    <p class="error" th:if="${#fields.hasErrors('motivoConsulta')}" th:errors="*{motivoConsulta}"></p>
                 </div>
-                <div class="field field-full">
+                <div class="campo campo-completo">
                     <label for="diagnostico">Diagnostico *</label>
-                    <textarea id="diagnostico" th:field="*{diagnostico}" rows="3"
-                              placeholder="Diagnostico de la consulta"></textarea>
-                    <p class="field-error" th:if="${#fields.hasErrors('diagnostico')}" th:errors="*{diagnostico}"></p>
+                    <textarea id="diagnostico" th:field="*{diagnostico}" rows="3"></textarea>
+                    <p class="error" th:if="${#fields.hasErrors('diagnostico')}" th:errors="*{diagnostico}"></p>
                 </div>
-                <div class="field field-full">
+                <div class="campo campo-completo">
                     <label for="tratamiento">Tratamiento</label>
-                    <textarea id="tratamiento" th:field="*{tratamiento}" rows="3"
-                              placeholder="Indicaciones y tratamiento"></textarea>
-                    <p class="field-error" th:if="${#fields.hasErrors('tratamiento')}" th:errors="*{tratamiento}"></p>
+                    <textarea id="tratamiento" th:field="*{tratamiento}" rows="3"></textarea>
+                    <p class="error" th:if="${#fields.hasErrors('tratamiento')}" th:errors="*{tratamiento}"></p>
                 </div>
-                <div class="field field-full">
-                    <label for="notas">Notas adicionales</label>
-                    <textarea id="notas" th:field="*{notas}" rows="3" placeholder="Observaciones de la consulta"></textarea>
-                    <p class="field-error" th:if="${#fields.hasErrors('notas')}" th:errors="*{notas}"></p>
+                <div class="campo campo-completo">
+                    <label for="notas">Notas</label>
+                    <textarea id="notas" th:field="*{notas}" rows="2"></textarea>
+                    <p class="error" th:if="${#fields.hasErrors('notas')}" th:errors="*{notas}"></p>
                 </div>
             </div>
         </div>
 
-        <div class="form-section">
+        <div class="seccion-form">
             <h2>Signos vitales</h2>
-            <div class="form-grid form-grid-3">
-                <div class="field">
+            <div class="fila">
+                <div class="campo">
                     <label for="peso">Peso (kg)</label>
-                    <input type="number" id="peso" th:field="*{peso}" step="0.01" min="0" placeholder="Ej. 62.50">
+                    <input type="number" id="peso" th:field="*{peso}" step="0.01" min="0">
                 </div>
-                <div class="field">
+                <div class="campo">
                     <label for="talla">Talla (m)</label>
-                    <input type="number" id="talla" th:field="*{talla}" step="0.01" min="0" placeholder="Ej. 1.62">
+                    <input type="number" id="talla" th:field="*{talla}" step="0.01" min="0">
                 </div>
-                <div class="field">
+                <div class="campo">
                     <label for="presionArterial">Presion arterial</label>
-                    <input type="text" id="presionArterial" th:field="*{presionArterial}" maxlength="20" placeholder="Ej. 120/80">
+                    <input type="text" id="presionArterial" th:field="*{presionArterial}" maxlength="20">
+                    <p class="error" th:if="${#fields.hasErrors('presionArterial')}" th:errors="*{presionArterial}"></p>
                 </div>
-                <div class="field">
-                    <label for="temperatura">Temperatura (°C)</label>
-                    <input type="number" id="temperatura" th:field="*{temperatura}" step="0.1" min="0" placeholder="Ej. 36.5">
+                <div class="campo">
+                    <label for="temperatura">Temperatura (C)</label>
+                    <input type="number" id="temperatura" th:field="*{temperatura}" step="0.1" min="0">
                 </div>
-                <div class="field">
+                <div class="campo">
                     <label for="frecuenciaCardiaca">Frecuencia cardiaca (lpm)</label>
-                    <input type="number" id="frecuenciaCardiaca" th:field="*{frecuenciaCardiaca}" step="1" min="0" placeholder="Ej. 72">
+                    <input type="number" id="frecuenciaCardiaca" th:field="*{frecuenciaCardiaca}" step="1" min="0">
                 </div>
             </div>
         </div>
 
-        <div class="form-actions">
-            <a th:href="@{/historial}" class="btn btn-ghost">Cancelar</a>
-            <button type="submit" class="btn btn-primary"
+        <div class="acciones-form">
+            <a th:href="@{/historial}" class="boton">Cancelar</a>
+            <button type="submit" class="boton primario"
                     th:text="${modoEdicion} ? 'Guardar cambios' : 'Registrar atencion'">Guardar</button>
         </div>
     </form>

@@ -1,5 +1,8 @@
 package com.clinica.servicios.domain.enums;
 
+/**
+ * Estados posibles de una cita: programada, atendida o cancelada.
+ */
 public enum EstadoCita {
     PROGRAMADA("Programada", "badge-programada"),
     ATENDIDA("Atendida", "badge-atendida"),

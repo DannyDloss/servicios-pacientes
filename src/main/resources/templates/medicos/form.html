@@ -6,64 +6,61 @@
 </head>
 <body>
 <section>
-    <div class="page-header">
+    <div class="cabecera-pagina">
         <div>
             <h1 th:text="${modoEdicion} ? 'Editar medico' : 'Nuevo medico'">Medico</h1>
-            <p>Registra los datos profesionales y el horario de atencion.</p>
+            <p class="texto-gris">Complete los datos del medico.</p>
         </div>
-        <div class="page-actions">
-            <a th:href="@{/medicos}" class="btn btn-ghost">Volver al listado</a>
+        <div class="acciones">
+            <a th:href="@{/medicos}" class="boton">Volver</a>
         </div>
     </div>
 
-    <form th:action="${modoEdicion} ? @{/medicos/{id}(id=${medico.id})} : @{/medicos}"
-          th:object="${medico}" method="post" class="form-card">
-        <div class="form-section">
-            <h2>Datos profesionales</h2>
-            <div class="form-grid">
-                <div class="field">
-                    <label for="nombres">Nombres *</label>
-                    <input type="text" id="nombres" th:field="*{nombres}" maxlength="80" placeholder="Nombres completos">
-                    <p class="field-error" th:if="${#fields.hasErrors('nombres')}" th:errors="*{nombres}"></p>
-                </div>
-                <div class="field">
-                    <label for="apellidos">Apellidos *</label>
-                    <input type="text" id="apellidos" th:field="*{apellidos}" maxlength="80" placeholder="Apellidos completos">
-                    <p class="field-error" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></p>
-                </div>
-                <div class="field">
-                    <label for="especialidad">Especialidad *</label>
-                    <input type="text" id="especialidad" th:field="*{especialidad}" maxlength="80" placeholder="Ej. Medicina General">
-                    <p class="field-error" th:if="${#fields.hasErrors('especialidad')}" th:errors="*{especialidad}"></p>
-                </div>
-                <div class="field">
-                    <label for="colegiatura">Colegiatura / CMP *</label>
-                    <input type="text" id="colegiatura" th:field="*{colegiatura}" maxlength="30" placeholder="Ej. CMP-045678">
-                    <p class="field-error" th:if="${#fields.hasErrors('colegiatura')}" th:errors="*{colegiatura}"></p>
-                </div>
-            </div>
-        </div>
+    <form class="formulario"
+          th:action="${modoEdicion} ? @{/medicos/{id}(id=${medico.id})} : @{/medicos}"
+          th:object="${medico}" method="post">
 
-        <div class="form-section">
-            <h2>Contacto y disponibilidad</h2>
-            <div class="form-grid">
-                <div class="field">
+        <div class="seccion-form">
+            <h2>Datos profesionales</h2>
+            <div class="fila">
+                <div class="campo">
+                    <label for="nombres">Nombres *</label>
+                    <input type="text" id="nombres" th:field="*{nombres}" maxlength="80">
+                    <p class="error" th:if="${#fields.hasErrors('nombres')}" th:errors="*{nombres}"></p>
+                </div>
+                <div class="campo">
+                    <label for="apellidos">Apellidos *</label>
+                    <input type="text" id="apellidos" th:field="*{apellidos}" maxlength="80">
+                    <p class="error" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></p>
+                </div>
+                <div class="campo">
+                    <label for="especialidad">Especialidad *</label>
+                    <input type="text" id="especialidad" th:field="*{especialidad}" maxlength="80">
+                    <p class="error" th:if="${#fields.hasErrors('especialidad')}" th:errors="*{especialidad}"></p>
+                </div>
+                <div class="campo">
+                    <label for="colegiatura">Colegiatura *</label>
+                    <input type="text" id="colegiatura" th:field="*{colegiatura}" maxlength="30">
+                    <p class="error" th:if="${#fields.hasErrors('colegiatura')}" th:errors="*{colegiatura}"></p>
+                </div>
+                <div class="campo">
                     <label for="telefono">Telefono</label>
-                    <input type="text" id="telefono" th:field="*{telefono}" maxlength="20" placeholder="Numero de contacto">
-                    <p class="field-error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></p>
+                    <input type="text" id="telefono" th:field="*{telefono}" maxlength="20">
+                    <p class="error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></p>
                 </div>
-                <div class="field">
+                <div class="campo">
                     <label for="email">Correo electronico</label>
-                    <input type="email" id="email" th:field="*{email}" maxlength="120" placeholder="correo@clinica.com">
-                    <p class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                    <input type="email" id="email" th:field="*{email}" maxlength="120">
+                    <p class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
                 </div>
-                <div class="field field-full">
+                <div class="campo campo-completo">
                     <label for="horario">Horario de atencion</label>
-                    <input type="text" id="horario" th:field="*{horario}" maxlength="120" placeholder="Ej. Lunes a viernes 08:00 - 14:00">
-                    <p class="field-error" th:if="${#fields.hasErrors('horario')}" th:errors="*{horario}"></p>
+                    <input type="text" id="horario" th:field="*{horario}" maxlength="120"
+                           placeholder="Ej. Lunes a viernes de 8:00 a 14:00">
+                    <p class="error" th:if="${#fields.hasErrors('horario')}" th:errors="*{horario}"></p>
                 </div>
-                <div class="field field-full">
-                    <label class="checkbox-label">
+                <div class="campo campo-completo">
+                    <label>
                         <input type="checkbox" th:field="*{activo}">
                         Medico activo para nuevas citas
                     </label>
@@ -71,9 +68,9 @@
             </div>
         </div>
 
-        <div class="form-actions">
-            <a th:href="@{/medicos}" class="btn btn-ghost">Cancelar</a>
-            <button type="submit" class="btn btn-primary"
+        <div class="acciones-form">
+            <a th:href="@{/medicos}" class="boton">Cancelar</a>
+            <button type="submit" class="boton primario"
                     th:text="${modoEdicion} ? 'Guardar cambios' : 'Registrar medico'">Guardar</button>
         </div>
     </form>

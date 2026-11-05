@@ -1,80 +1,36 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(titulo, contenido)">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title th:replace="${title}">Clinica San Rafael</title>
+    <title th:replace="${titulo}">Clinica San Rafael</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-<div class="app-shell">
-    <aside class="sidebar" id="sidebar">
-        <div class="brand">
-            <div class="brand-mark">+</div>
-            <div class="brand-text">
-                <strong>Clinica San Rafael</strong>
-                <span>Gestion de servicios</span>
-            </div>
-        </div>
 
-        <nav class="nav">
-            <a th:href="@{/}"
-               th:classappend="${currentPath == '/'} ? 'active'">
-                <span class="nav-dot"></span> Dashboard
-            </a>
-            <a th:href="@{/pacientes}"
-               th:classappend="${#strings.startsWith(currentPath, '/pacientes')} ? 'active'">
-                <span class="nav-dot"></span> Pacientes
-            </a>
-            <a th:href="@{/medicos}"
-               th:classappend="${#strings.startsWith(currentPath, '/medicos')} ? 'active'">
-                <span class="nav-dot"></span> Medicos
-            </a>
-            <a th:href="@{/citas}"
-               th:classappend="${#strings.startsWith(currentPath, '/citas')} ? 'active'">
-                <span class="nav-dot"></span> Citas
-            </a>
-            <a th:href="@{/historial}"
-               th:classappend="${#strings.startsWith(currentPath, '/historial')} ? 'active'">
-                <span class="nav-dot"></span> Historial clinico
-            </a>
-            <a th:href="@{/recetas}"
-               th:classappend="${#strings.startsWith(currentPath, '/recetas')} ? 'active'">
-                <span class="nav-dot"></span> Recetas
-            </a>
+<header class="barra">
+    <div class="contenedor barra-contenido">
+        <a class="logo" th:href="@{/}">Clinica San Rafael</a>
+        <nav class="menu">
+            <a th:href="@{/}">Inicio</a>
+            <a th:href="@{/pacientes}">Pacientes</a>
+            <a th:href="@{/medicos}">Medicos</a>
+            <a th:href="@{/citas}">Citas</a>
+            <a th:href="@{/historial}">Historial</a>
+            <a th:href="@{/recetas}">Recetas</a>
         </nav>
-
-        <div class="sidebar-footer">
-            <div class="sidebar-card">
-                <span class="sidebar-card-title">Acceso rapido</span>
-                <a th:href="@{/citas/nueva}">Agendar cita</a>
-                <a th:href="@{/pacientes/nuevo}">Registrar paciente</a>
-                <a th:href="@{/recetas/nueva}">Emitir receta</a>
-            </div>
-            <small>Spring Boot + MySQL</small>
-        </div>
-    </aside>
-
-    <div class="main">
-        <header class="topbar">
-            <button class="menu-toggle" type="button" data-menu-toggle aria-label="Abrir menu">&#9776;</button>
-            <div class="topbar-title">
-                <span class="eyebrow">Sistema de gestion clinica</span>
-                <strong>Panel administrativo</strong>
-            </div>
-            <div class="topbar-actions">
-                <a th:href="@{/pacientes/nuevo}" class="btn btn-ghost">Nuevo paciente</a>
-                <a th:href="@{/citas/nueva}" class="btn btn-primary">Nueva cita</a>
-            </div>
-        </header>
-
-        <main class="content">
-            <div class="flash" th:if="${exito}" th:text="${exito}"></div>
-            <div class="flash flash-error" th:if="${error}" th:text="${error}"></div>
-            <div th:replace="${content}"></div>
-        </main>
     </div>
-</div>
-<script th:src="@{/js/app.js}"></script>
+</header>
+
+<main class="contenedor contenido">
+    <div class="mensaje" th:if="${exito}" th:text="${exito}"></div>
+    <div class="mensaje error" th:if="${error}" th:text="${error}"></div>
+    <div th:replace="${contenido}"></div>
+</main>
+
+<footer class="pie">
+    <div class="contenedor">Sistema de gestion de clinica - Spring Boot y MySQL</div>
+</footer>
+
 </body>
 </html>

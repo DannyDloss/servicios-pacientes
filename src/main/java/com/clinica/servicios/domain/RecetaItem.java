@@ -9,6 +9,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+/**
+ * Representa un medicamento dentro de una receta medica.
+ * Sus datos se guardan en la tabla "receta_items".
+ */
 @Entity
 @Table(name = "receta_items")
 public class RecetaItem {

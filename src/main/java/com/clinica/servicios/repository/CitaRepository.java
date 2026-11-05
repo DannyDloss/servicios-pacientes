@@ -9,35 +9,20 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Repositorio de citas.
+ */
 public interface CitaRepository extends JpaRepository<Cita, Long> {
 
     List<Cita> findAllByOrderByFechaHoraDesc();
 
     List<Cita> findByPacienteIdOrderByFechaHoraDesc(Long pacienteId);
 
-    long countByEstado(EstadoCita estado);
-
-    long countByFechaHoraBetween(LocalDateTime desde, LocalDateTime hasta);
-
-    List<Cita> findTop5ByFechaHoraAfterAndEstadoOrderByFechaHoraAsc(LocalDateTime desde, EstadoCita estado);
-
     boolean existsByPacienteId(Long pacienteId);
 
     boolean existsByMedicoId(Long medicoId);
 
-    @Query("""
-            select c from Cita c
-            where (:estado is null or c.estado = :estado)
-              and (:medicoId is null or c.medico.id = :medicoId)
-              and (:desde is null or c.fechaHora >= :desde)
-              and (:hasta is null or c.fechaHora < :hasta)
-            order by c.fechaHora asc
-            """)
-    List<Cita> buscar(@Param("estado") EstadoCita estado,
-                      @Param("medicoId") Long medicoId,
-                      @Param("desde") LocalDateTime desde,
-                      @Param("hasta") LocalDateTime hasta);
-
+    // Revisa si el medico ya tiene otra cita en la misma fecha y hora.
     @Query("""
             select count(c) > 0 from Cita c
             where c.medico.id = :medicoId
@@ -50,6 +35,7 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
                                   @Param("cancelada") EstadoCita cancelada,
                                   @Param("id") Long id);
 
+    // Revisa si el paciente ya tiene otra cita en la misma fecha y hora.
     @Query("""
             select count(c) > 0 from Cita c
             where c.paciente.id = :pacienteId

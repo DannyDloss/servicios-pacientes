@@ -8,11 +8,13 @@ import com.clinica.servicios.repository.HistorialMedicoRepository;
 import com.clinica.servicios.repository.RecetaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Reglas de negocio para las recetas.
+ */
 @Service
 public class RecetaService {
 
@@ -26,10 +28,7 @@ public class RecetaService {
     }
 
     @Transactional(readOnly = true)
-    public List<Receta> listar(String q) {
-        if (StringUtils.hasText(q)) {
-            return recetaRepository.buscar(q.trim());
-        }
+    public List<Receta> listar() {
         return recetaRepository.findAllByOrderByFechaEmisionDesc();
     }
 
@@ -53,15 +52,7 @@ public class RecetaService {
         HistorialMedico historial = historialRepository.findById(datos.getHistorialSeleccionadoId())
                 .orElseThrow(() -> new BusinessException("El historial seleccionado no existe."));
 
-        List<RecetaItem> items = datos.getItems();
-        if (items == null || items.isEmpty()) {
-            throw new BusinessException("Debe agregar al menos un medicamento.");
-        }
-
-        long validos = items.stream()
-                .filter(i -> i != null && StringUtils.hasText(i.getMedicamento()))
-                .count();
-        if (validos == 0) {
+        if (datos.getItems() == null || datos.getItems().isEmpty()) {
             throw new BusinessException("Debe agregar al menos un medicamento.");
         }
 
@@ -73,13 +64,15 @@ public class RecetaService {
         receta.setIndicacionesGenerales(datos.getIndicacionesGenerales());
         receta.setEstado(EstadoReceta.EMITIDA);
 
-        for (RecetaItem item : items) {
-            if (item == null || !StringUtils.hasText(item.getMedicamento())) {
+        int medicamentosValidos = 0;
+        for (RecetaItem item : datos.getItems()) {
+            if (item == null || !textoValido(item.getMedicamento())) {
                 continue;
             }
-            if (!StringUtils.hasText(item.getDosis()) || !StringUtils.hasText(item.getFrecuencia())) {
+            if (!textoValido(item.getDosis()) || !textoValido(item.getFrecuencia())) {
                 throw new BusinessException("Complete la dosis y la frecuencia de todos los medicamentos.");
             }
+
             RecetaItem nuevo = new RecetaItem();
             nuevo.setMedicamento(item.getMedicamento().trim());
             nuevo.setPresentacion(item.getPresentacion());
@@ -89,6 +82,11 @@ public class RecetaService {
             nuevo.setCantidad(item.getCantidad());
             nuevo.setIndicaciones(item.getIndicaciones());
             receta.addItem(nuevo);
+            medicamentosValidos++;
+        }
+
+        if (medicamentosValidos == 0) {
+            throw new BusinessException("Debe agregar al menos un medicamento.");
         }
 
         return recetaRepository.save(receta);
@@ -97,12 +95,14 @@ public class RecetaService {
     @Transactional
     public Receta anular(Long id) {
         Receta receta = obtener(id);
+        if (receta.getEstado() == EstadoReceta.ANULADA) {
+            throw new BusinessException("La receta ya esta anulada.");
+        }
         receta.setEstado(EstadoReceta.ANULADA);
         return recetaRepository.save(receta);
     }
 
-    @Transactional(readOnly = true)
-    public long contarEmitidas() {
-        return recetaRepository.countByEstado(EstadoReceta.EMITIDA);
+    private boolean textoValido(String texto) {
+        return texto != null && !texto.trim().isEmpty();
     }
 }

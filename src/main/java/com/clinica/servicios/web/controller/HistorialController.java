@@ -21,6 +21,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 
+/**
+ * Pantallas para registrar y consultar el historial clinico.
+ */
 @Controller
 @RequestMapping("/historial")
 public class HistorialController {
@@ -41,12 +44,12 @@ public class HistorialController {
     }
 
     @GetMapping
-    public String listar(@RequestParam(required = false) String q, Model model) {
-        model.addAttribute("historiales", historialService.listar(q));
-        model.addAttribute("q", q);
+    public String listar(Model model) {
+        model.addAttribute("historiales", historialService.listar());
         return "historial/list";
     }
 
+    // Si llega una cita, se usan sus datos. Si no, se eligen paciente y medico.
     @GetMapping("/nuevo")
     public String nuevo(@RequestParam(required = false) Long citaId,
                         @RequestParam(required = false) Long pacienteId,

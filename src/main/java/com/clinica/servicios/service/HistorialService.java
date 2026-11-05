@@ -11,12 +11,14 @@ import com.clinica.servicios.repository.MedicoRepository;
 import com.clinica.servicios.repository.PacienteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Reglas de negocio para el historial clinico.
+ */
 @Service
 public class HistorialService {
 
@@ -36,21 +38,13 @@ public class HistorialService {
     }
 
     @Transactional(readOnly = true)
-    public List<HistorialMedico> listar(String q) {
-        if (StringUtils.hasText(q)) {
-            return historialRepository.buscar(q.trim());
-        }
+    public List<HistorialMedico> listar() {
         return historialRepository.findAllByOrderByFechaConsultaDesc();
     }
 
     @Transactional(readOnly = true)
     public List<HistorialMedico> listarPorPaciente(Long pacienteId) {
         return historialRepository.findByPacienteIdOrderByFechaConsultaDesc(pacienteId);
-    }
-
-    @Transactional(readOnly = true)
-    public List<HistorialMedico> recientes() {
-        return historialRepository.findTop5ByOrderByFechaConsultaDesc();
     }
 
     @Transactional(readOnly = true)
@@ -116,10 +110,5 @@ public class HistorialService {
         }
 
         return guardado;
-    }
-
-    @Transactional(readOnly = true)
-    public long contar() {
-        return historialRepository.count();
     }
 }

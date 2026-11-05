@@ -1,5 +1,8 @@
 package com.clinica.servicios.domain.enums;
 
+/**
+ * Estados posibles de una receta: emitida o anulada.
+ */
 public enum EstadoReceta {
     EMITIDA("Emitida", "badge-emitida"),
     ANULADA("Anulada", "badge-anulada");

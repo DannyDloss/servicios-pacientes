@@ -7,10 +7,12 @@ import com.clinica.servicios.repository.MedicoRepository;
 import com.clinica.servicios.repository.RecetaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+/**
+ * Reglas de negocio para los medicos.
+ */
 @Service
 public class MedicoService {
 
@@ -30,10 +32,7 @@ public class MedicoService {
     }
 
     @Transactional(readOnly = true)
-    public List<Medico> listar(String q) {
-        if (StringUtils.hasText(q)) {
-            return medicoRepository.buscar(q.trim());
-        }
+    public List<Medico> listar() {
         return medicoRepository.findAllByOrderByApellidosAscNombresAsc();
     }
 
@@ -89,10 +88,5 @@ public class MedicoService {
             throw new BusinessException("No se puede eliminar el medico porque tiene recetas emitidas.");
         }
         medicoRepository.delete(medico);
-    }
-
-    @Transactional(readOnly = true)
-    public long contar() {
-        return medicoRepository.count();
     }
 }

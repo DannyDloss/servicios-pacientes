@@ -6,70 +6,55 @@
 </head>
 <body>
 <section>
-    <div class="page-header">
+    <div class="cabecera-pagina">
         <div>
             <h1>Recetas medicas</h1>
-            <p>Emite, consulta y descarga las recetas en formato PDF.</p>
+            <p class="texto-gris">Recetas emitidas para los pacientes.</p>
         </div>
-        <div class="page-actions">
-            <a th:href="@{/recetas/nueva}" class="btn btn-primary">Nueva receta</a>
+        <div class="acciones">
+            <a th:href="@{/recetas/nueva}" class="boton primario">Nueva receta</a>
         </div>
     </div>
 
-    <form th:action="@{/recetas}" method="get" class="filter-bar">
-        <input type="search" name="q" th:value="${q}" placeholder="Buscar por paciente, documento o medico">
-        <button type="submit" class="btn btn-secondary">Buscar</button>
-        <a th:href="@{/recetas}" class="btn btn-ghost">Limpiar</a>
-    </form>
-
-    <div class="panel">
-        <div class="table-wrap" th:if="${!#lists.isEmpty(recetas)}">
-            <table class="table">
+    <div class="tarjeta" th:if="${!#lists.isEmpty(recetas)}">
+        <div class="tabla-contenedor">
+            <table class="tabla">
                 <thead>
                 <tr>
                     <th>Codigo</th>
                     <th>Fecha</th>
                     <th>Paciente</th>
                     <th>Medico</th>
-                    <th>Items</th>
                     <th>Estado</th>
-                    <th class="actions-col">Acciones</th>
+                    <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="r : ${recetas}">
                     <td>
-                        <a th:href="@{/recetas/{id}(id=${r.id})}" class="table-link" th:text="${r.codigo}">REC</a>
+                        <a th:href="@{/recetas/{id}(id=${r.id})}" th:text="${r.codigo}">REC</a>
                     </td>
                     <td th:text="${r.fechaEmisionTexto}">Fecha</td>
-                    <td>
-                        <span th:text="${r.paciente.nombreCompleto}">Paciente</span>
-                        <small class="block muted" th:text="${r.paciente.documento}">Documento</small>
-                    </td>
-                    <td>
-                        <span th:text="${r.medico.nombreCompleto}">Medico</span>
-                        <small class="block muted" th:text="${r.medico.especialidad}">Especialidad</small>
-                    </td>
-                    <td><span class="badge badge-neutro" th:text="${r.cantidadItems}">0</span></td>
-                    <td><span class="badge" th:classappend="${r.estado.claseCss}" th:text="${r.estado.etiqueta}">Estado</span></td>
-                    <td class="actions-col">
-                        <a th:href="@{/recetas/{id}(id=${r.id})}" class="btn btn-sm btn-ghost">Ver</a>
-                        <a th:href="@{/recetas/{id}/pdf(id=${r.id})}" class="btn btn-sm btn-secondary">PDF</a>
+                    <td th:text="${r.paciente.nombreCompleto}">Paciente</td>
+                    <td th:text="${r.medico.nombreCompleto}">Medico</td>
+                    <td><span class="estado" th:text="${r.estado.etiqueta}">Estado</span></td>
+                    <td class="celda-acciones">
+                        <a th:href="@{/recetas/{id}(id=${r.id})}" class="boton pequeno">Ver</a>
                         <form th:if="${r.estado.name() == 'EMITIDA'}"
-                              th:action="@{/recetas/{id}/anular(id=${r.id})}" method="post" class="inline-form">
-                            <button type="submit" class="btn btn-sm btn-danger"
-                                    data-confirm="¿Anular esta receta?">Anular</button>
+                              th:action="@{/recetas/{id}/anular(id=${r.id})}" method="post" class="form-inline">
+                            <button type="submit" class="boton pequeno peligro"
+                                    onclick="return confirm('¿Anular esta receta?')">Anular</button>
                         </form>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <div class="empty-state" th:if="${#lists.isEmpty(recetas)}">
-            <strong>No se encontraron recetas</strong>
-            <p>Emite una receta desde un historial clinico.</p>
-            <a th:href="@{/recetas/nueva}" class="btn btn-primary">Nueva receta</a>
-        </div>
+    </div>
+
+    <div class="vacio" th:if="${#lists.isEmpty(recetas)}">
+        <p>No hay recetas emitidas.</p>
+        <a th:href="@{/recetas/nueva}" class="boton primario">Emitir primera receta</a>
     </div>
 </section>
 </body>

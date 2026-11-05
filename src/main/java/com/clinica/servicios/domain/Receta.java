@@ -23,6 +23,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Representa una receta medica emitida para un paciente.
+ * Cada receta puede tener varios medicamentos (RecetaItem).
+ */
 @Entity
 @Table(name = "recetas")
 public class Receta {

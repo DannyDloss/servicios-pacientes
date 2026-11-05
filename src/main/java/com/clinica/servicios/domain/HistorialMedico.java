@@ -20,6 +20,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Guarda la atencion medica de una cita.
+ * Incluye el diagnostico, el tratamiento y los signos vitales del paciente.
+ */
 @Entity
 @Table(name = "historiales")
 public class HistorialMedico {

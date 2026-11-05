@@ -6,56 +6,52 @@
 </head>
 <body>
 <section>
-    <div class="page-header">
+    <div class="cabecera-pagina">
         <div>
             <h1>Nueva receta</h1>
-            <p>Selecciona el historial clinico y agrega los medicamentos indicados.</p>
+            <p class="texto-gris">Seleccione el historial y complete los medicamentos.</p>
         </div>
-        <div class="page-actions">
-            <a th:href="@{/recetas}" class="btn btn-ghost">Volver a recetas</a>
+        <div class="acciones">
+            <a th:href="@{/recetas}" class="boton">Volver</a>
         </div>
     </div>
 
-    <form th:action="@{/recetas}" th:object="${receta}" method="post" class="form-card" data-recipe-form>
-        <div class="form-section">
+    <form class="formulario" th:action="@{/recetas}" th:object="${receta}" method="post">
+
+        <div class="seccion-form">
             <h2>Datos de la receta</h2>
-            <div class="alert alert-error" th:if="${#fields.hasGlobalErrors()}">
+
+            <div class="mensaje error" th:if="${#fields.hasGlobalErrors()}">
                 <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Error</p>
             </div>
 
-            <div class="form-grid">
-                <div class="field field-full">
-                    <label for="historialSeleccionadoId">Historial clinico *</label>
-                    <select id="historialSeleccionadoId" th:field="*{historialSeleccionadoId}">
-                        <option value="">Seleccione un historial</option>
-                        <option th:each="h : ${historiales}" th:value="${h.id}"
-                                th:text="${h.fechaConsultaTexto + ' - ' + h.paciente.nombreCompleto + ' - ' + h.medico.nombreCompleto}"></option>
-                    </select>
-                    <p class="field-error" th:if="${#fields.hasErrors('historialSeleccionadoId')}" th:errors="*{historialSeleccionadoId}"></p>
-                    <p class="muted" th:if="${#lists.isEmpty(historiales)}">
-                        No hay historiales disponibles. Primero registra una atencion.
-                    </p>
-                </div>
+            <div class="campo">
+                <label for="historialSeleccionadoId">Historial clinico *</label>
+                <select id="historialSeleccionadoId" th:field="*{historialSeleccionadoId}">
+                    <option value="">Seleccione un historial</option>
+                    <option th:each="h : ${historiales}" th:value="${h.id}"
+                            th:text="${h.fechaConsultaTexto + ' - ' + h.paciente.nombreCompleto + ' - ' + h.medico.nombreCompleto}"></option>
+                </select>
+                <p class="error" th:if="${#fields.hasErrors('historialSeleccionadoId')}"
+                   th:errors="*{historialSeleccionadoId}"></p>
+                <p class="texto-gris" th:if="${#lists.isEmpty(historiales)}">
+                    No hay historiales. Primero registre una atencion.
+                </p>
             </div>
 
-            <div class="summary-box" th:if="${historialSeleccionado != null}">
+            <div class="resumen" th:if="${historialSeleccionado != null}">
                 <p><strong>Paciente:</strong> <span th:text="${historialSeleccionado.paciente.nombreCompleto}">-</span></p>
                 <p><strong>Medico:</strong> <span th:text="${historialSeleccionado.medico.nombreCompleto}">-</span></p>
                 <p><strong>Diagnostico:</strong> <span th:text="${historialSeleccionado.diagnostico}">-</span></p>
             </div>
         </div>
 
-        <div class="form-section">
-            <div class="panel-header">
-                <div>
-                    <h2>Medicamentos</h2>
-                    <p>Completa medicamento, dosis y frecuencia en cada fila.</p>
-                </div>
-                <button type="button" class="btn btn-sm btn-secondary" data-add-item>+ Agregar medicamento</button>
-            </div>
+        <div class="seccion-form">
+            <h2>Medicamentos</h2>
+            <p class="texto-gris">Complete solo las filas que necesite.</p>
 
-            <div class="table-wrap">
-                <table class="table table-compact" data-items-table>
+            <div class="tabla-contenedor">
+                <table class="tabla">
                     <thead>
                     <tr>
                         <th>Medicamento</th>
@@ -65,42 +61,30 @@
                         <th>Duracion</th>
                         <th>Cantidad</th>
                         <th>Indicaciones</th>
-                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="item, stat : ${receta.items}">
                         <td>
-                            <input type="text" th:field="*{items[__${stat.index}__].medicamento}"
-                                   maxlength="120" placeholder="Ej. Paracetamol 500 mg">
+                            <input type="text" th:field="*{items[__${stat.index}__].medicamento}" maxlength="120">
                         </td>
                         <td>
-                            <input type="text" th:field="*{items[__${stat.index}__].presentacion}"
-                                   maxlength="80" placeholder="Ej. Tableta">
+                            <input type="text" th:field="*{items[__${stat.index}__].presentacion}" maxlength="80">
                         </td>
                         <td>
-                            <input type="text" th:field="*{items[__${stat.index}__].dosis}"
-                                   maxlength="80" placeholder="Ej. 1 tableta">
+                            <input type="text" th:field="*{items[__${stat.index}__].dosis}" maxlength="80">
                         </td>
                         <td>
-                            <input type="text" th:field="*{items[__${stat.index}__].frecuencia}"
-                                   maxlength="80" placeholder="Ej. Cada 8 horas">
+                            <input type="text" th:field="*{items[__${stat.index}__].frecuencia}" maxlength="80">
                         </td>
                         <td>
-                            <input type="text" th:field="*{items[__${stat.index}__].duracion}"
-                                   maxlength="60" placeholder="Ej. 5 dias">
+                            <input type="text" th:field="*{items[__${stat.index}__].duracion}" maxlength="60">
                         </td>
                         <td>
-                            <input type="text" th:field="*{items[__${stat.index}__].cantidad}"
-                                   maxlength="40" placeholder="Ej. 15 tabletas">
+                            <input type="text" th:field="*{items[__${stat.index}__].cantidad}" maxlength="40">
                         </td>
                         <td>
-                            <input type="text" th:field="*{items[__${stat.index}__].indicaciones}"
-                                   maxlength="255" placeholder="Ej. Despues de alimentos">
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-danger" data-remove-item
-                                    title="Quitar medicamento">Quitar</button>
+                            <input type="text" th:field="*{items[__${stat.index}__].indicaciones}" maxlength="255">
                         </td>
                     </tr>
                     </tbody>
@@ -108,18 +92,17 @@
             </div>
         </div>
 
-        <div class="form-section">
+        <div class="seccion-form">
             <h2>Indicaciones generales</h2>
-            <div class="field field-full">
+            <div class="campo">
                 <label for="indicacionesGenerales">Recomendaciones para el paciente</label>
-                <textarea id="indicacionesGenerales" th:field="*{indicacionesGenerales}" rows="4"
-                          placeholder="Ej. Mantener hidratacion, completar el tratamiento, acudir a control..."></textarea>
+                <textarea id="indicacionesGenerales" th:field="*{indicacionesGenerales}" rows="4"></textarea>
             </div>
         </div>
 
-        <div class="form-actions">
-            <a th:href="@{/recetas}" class="btn btn-ghost">Cancelar</a>
-            <button type="submit" class="btn btn-primary">Emitir receta</button>
+        <div class="acciones-form">
+            <a th:href="@{/recetas}" class="boton">Cancelar</a>
+            <button type="submit" class="boton primario">Emitir receta</button>
         </div>
     </form>
 </section>

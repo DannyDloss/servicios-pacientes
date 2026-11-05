@@ -6,49 +6,48 @@
 </head>
 <body>
 <section>
-    <div class="page-header">
+    <div class="cabecera-pagina no-imprimir">
         <div>
-            <span class="eyebrow">Receta medica</span>
             <h1 th:text="${receta.codigo}">REC</h1>
-            <p>
+            <p class="texto-gris">
                 <span th:text="${receta.fechaEmisionTexto}">Fecha</span>
-                · <span th:text="${receta.paciente.nombreCompleto}">Paciente</span>
+                - <span th:text="${receta.paciente.nombreCompleto}">Paciente</span>
             </p>
         </div>
-        <div class="page-actions">
-            <a th:href="@{/recetas}" class="btn btn-ghost">Volver</a>
-            <a th:href="@{/recetas/{id}/pdf(id=${receta.id})}" class="btn btn-secondary">Descargar PDF</a>
+        <div class="acciones">
+            <a th:href="@{/recetas}" class="boton">Volver</a>
+            <button type="button" class="boton secundario" onclick="window.print()">Imprimir</button>
             <form th:if="${receta.estado.name() == 'EMITIDA'}"
-                  th:action="@{/recetas/{id}/anular(id=${receta.id})}" method="post" class="inline-form">
-                <button type="submit" class="btn btn-danger"
-                        data-confirm="¿Anular esta receta?">Anular receta</button>
+                  th:action="@{/recetas/{id}/anular(id=${receta.id})}" method="post" class="form-inline">
+                <button type="submit" class="boton peligro"
+                        onclick="return confirm('¿Anular esta receta?')">Anular receta</button>
             </form>
         </div>
     </div>
 
-    <div class="alert alert-warning" th:if="${receta.estado.name() == 'ANULADA'}">
-        Esta receta se encuentra anulada. Puede consultarse, pero no debe dispensarse.
+    <div class="mensaje error" th:if="${receta.estado.name() == 'ANULADA'}">
+        Esta receta se encuentra anulada.
     </div>
 
-    <article class="prescription">
-        <header class="prescription-header">
+    <article class="prescripcion">
+        <header class="prescripcion-cabecera">
             <div>
                 <h2>Clinica San Rafael</h2>
-                <p>Av. Salud 1250, Lima - Peru · Central telefonica: (01) 555-0100</p>
+                <p>Av. Salud 1250, Lima - Peru</p>
+                <p>Central telefonica: (01) 555-0100</p>
             </div>
-            <div class="prescription-code">
-                <span>Receta</span>
-                <strong th:text="${receta.codigo}">REC</strong>
-                <small th:text="${receta.fechaEmisionTexto}">Fecha</small>
+            <div>
+                <p><strong>Receta:</strong> <span th:text="${receta.codigo}">REC</span></p>
+                <p><strong>Fecha:</strong> <span th:text="${receta.fechaEmisionTexto}">Fecha</span></p>
             </div>
         </header>
 
-        <div class="prescription-info">
+        <div class="datos-receta">
             <div>
                 <h3>Paciente</h3>
                 <p><strong th:text="${receta.paciente.nombreCompleto}">Paciente</strong></p>
                 <p>Documento: <span th:text="${receta.paciente.documento}">-</span></p>
-                <p>Edad: <span th:text="${receta.paciente.edad}">-</span> años · Sexo: <span th:text="${receta.paciente.sexoTexto}">-</span></p>
+                <p>Edad: <span th:text="${receta.paciente.edad}">-</span> años</p>
                 <p>Alergias: <span th:text="${receta.paciente.alergias ?: 'Ninguna registrada'}">-</span></p>
             </div>
             <div>
@@ -56,17 +55,16 @@
                 <p><strong th:text="${receta.medico.nombreCompleto}">Medico</strong></p>
                 <p>Especialidad: <span th:text="${receta.medico.especialidad}">-</span></p>
                 <p>Colegiatura: <span th:text="${receta.medico.colegiatura}">-</span></p>
-                <p>Telefono: <span th:text="${receta.medico.telefono ?: 'No registrado'}">-</span></p>
             </div>
         </div>
 
-        <div class="prescription-diagnosis">
+        <div class="resumen">
             <strong>Diagnostico:</strong>
             <span th:text="${receta.historial.diagnostico}">-</span>
         </div>
 
-        <div class="table-wrap">
-            <table class="table table-compact">
+        <div class="tabla-contenedor">
+            <table class="tabla">
                 <thead>
                 <tr>
                     <th>Medicamento</th>
@@ -92,37 +90,30 @@
             </table>
         </div>
 
-        <div class="prescription-indications">
-            <strong>Indicaciones generales</strong>
+        <div class="resumen" style="margin-top: 16px;">
+            <strong>Indicaciones generales:</strong>
             <p th:text="${receta.indicacionesGenerales ?: 'Sin indicaciones adicionales.'}">-</p>
         </div>
 
-        <div class="prescription-signature">
-            <div class="signature-line"></div>
+        <div class="firma">
+            <div></div>
             <strong th:text="${receta.medico.nombreCompleto}">Medico</strong>
             <span th:text="'CMP: ' + ${receta.medico.colegiatura}">CMP</span>
             <small>Firma y sello del medico</small>
         </div>
 
-        <footer class="prescription-footer">
-            Documento generado electronicamente por el Sistema de Gestion Clinica. Valido solo con firma y sello del medico.
+        <footer class="pie-receta">
+            Documento generado por el Sistema de Gestion Clinica.
         </footer>
     </article>
 
-    <section class="panel">
-        <div class="panel-header">
-            <div>
-                <h2>Historial asociado</h2>
-                <p>Atencion clinica que origino esta receta.</p>
-            </div>
-            <a th:href="@{/historial/{id}(id=${receta.historial.id})}" class="link">Ver historial</a>
-        </div>
-        <div class="summary-box">
-            <p><strong>Fecha de consulta:</strong> <span th:text="${receta.historial.fechaConsultaTexto}">-</span></p>
-            <p><strong>Motivo:</strong> <span th:text="${receta.historial.motivoConsulta}">-</span></p>
-            <p><strong>Tratamiento:</strong> <span th:text="${receta.historial.tratamiento ?: 'No registrado'}">-</span></p>
-        </div>
-    </section>
+    <div class="tarjeta no-imprimir">
+        <h2>Historial asociado</h2>
+        <p><strong>Fecha:</strong> <span th:text="${receta.historial.fechaConsultaTexto}">-</span></p>
+        <p><strong>Motivo:</strong> <span th:text="${receta.historial.motivoConsulta}">-</span></p>
+        <p><strong>Tratamiento:</strong> <span th:text="${receta.historial.tratamiento ?: 'No registrado'}">-</span></p>
+        <a th:href="@{/historial/{id}(id=${receta.historial.id})}" class="boton">Ver historial</a>
+    </div>
 </section>
 </body>
 </html>

@@ -21,6 +21,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Representa una cita medica entre un paciente y un medico.
+ * Sus datos se guardan en la tabla "citas".
+ */
 @Entity
 @Table(name = "citas")
 public class Cita {

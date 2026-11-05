@@ -6,70 +6,55 @@
 </head>
 <body>
 <section>
-    <div class="page-header">
+    <div class="cabecera-pagina">
         <div>
             <h1>Pacientes</h1>
-            <p>Administra los datos personales, contacto y antecedentes medicos.</p>
+            <p class="texto-gris">Lista de pacientes registrados en la clinica.</p>
         </div>
-        <div class="page-actions">
-            <a th:href="@{/pacientes/nuevo}" class="btn btn-primary">Nuevo paciente</a>
+        <div class="acciones">
+            <a th:href="@{/pacientes/nuevo}" class="boton primario">Nuevo paciente</a>
         </div>
     </div>
 
-    <form th:action="@{/pacientes}" method="get" class="filter-bar">
-        <input type="search" name="q" th:value="${q}" placeholder="Buscar por nombre, apellido o documento">
-        <button type="submit" class="btn btn-secondary">Buscar</button>
-        <a th:href="@{/pacientes}" class="btn btn-ghost">Limpiar</a>
-    </form>
-
-    <div class="panel">
-        <div class="table-wrap" th:if="${!#lists.isEmpty(pacientes)}">
-            <table class="table">
+    <div class="tarjeta" th:if="${!#lists.isEmpty(pacientes)}">
+        <div class="tabla-contenedor">
+            <table class="tabla">
                 <thead>
                 <tr>
                     <th>Documento</th>
                     <th>Paciente</th>
                     <th>Edad</th>
-                    <th>Contacto</th>
+                    <th>Telefono</th>
                     <th>Sangre</th>
-                    <th class="actions-col">Acciones</th>
+                    <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="p : ${pacientes}">
                     <td th:text="${p.documento}">Documento</td>
                     <td>
-                        <a th:href="@{/pacientes/{id}(id=${p.id})}" class="table-link"
-                           th:text="${p.nombreCompleto}">Paciente</a>
-                        <small class="block muted" th:text="${p.email}">Correo</small>
+                        <a th:href="@{/pacientes/{id}(id=${p.id})}" th:text="${p.nombreCompleto}">Paciente</a>
                     </td>
-                    <td th:text="${p.edad}">Edad</td>
-                    <td>
-                        <span th:text="${p.telefono}">Telefono</span>
-                        <small class="block muted" th:text="${p.sexoTexto}">Sexo</small>
-                    </td>
-                    <td>
-                        <span class="badge badge-neutro" th:text="${p.tipoSangre ?: '-'}">O+</span>
-                    </td>
-                    <td class="actions-col">
-                        <a th:href="@{/pacientes/{id}(id=${p.id})}" class="btn btn-sm btn-ghost">Ver</a>
-                        <a th:href="@{/pacientes/{id}/editar(id=${p.id})}" class="btn btn-sm btn-secondary">Editar</a>
-                        <form th:action="@{/pacientes/{id}/eliminar(id=${p.id})}" method="post" class="inline-form">
-                            <button type="submit" class="btn btn-sm btn-danger"
-                                    data-confirm="¿Eliminar este paciente? Esta accion no se puede deshacer.">
-                                Eliminar
-                            </button>
+                    <td th:text="${p.edad}">0</td>
+                    <td th:text="${p.telefono}">Telefono</td>
+                    <td th:text="${p.tipoSangre}">O+</td>
+                    <td class="celda-acciones">
+                        <a th:href="@{/pacientes/{id}(id=${p.id})}" class="boton pequeno">Ver</a>
+                        <a th:href="@{/pacientes/{id}/editar(id=${p.id})}" class="boton pequeno secundario">Editar</a>
+                        <form th:action="@{/pacientes/{id}/eliminar(id=${p.id})}" method="post" class="form-inline">
+                            <button type="submit" class="boton pequeno peligro"
+                                    onclick="return confirm('¿Eliminar este paciente?')">Eliminar</button>
                         </form>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <div class="empty-state" th:if="${#lists.isEmpty(pacientes)}">
-            <strong>No se encontraron pacientes</strong>
-            <p>Registra el primer paciente o cambia el criterio de busqueda.</p>
-            <a th:href="@{/pacientes/nuevo}" class="btn btn-primary">Nuevo paciente</a>
-        </div>
+    </div>
+
+    <div class="vacio" th:if="${#lists.isEmpty(pacientes)}">
+        <p>No hay pacientes registrados.</p>
+        <a th:href="@{/pacientes/nuevo}" class="boton primario">Registrar primer paciente</a>
     </div>
 </section>
 </body>

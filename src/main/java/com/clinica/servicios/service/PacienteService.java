@@ -5,13 +5,14 @@ import com.clinica.servicios.repository.CitaRepository;
 import com.clinica.servicios.repository.HistorialMedicoRepository;
 import com.clinica.servicios.repository.PacienteRepository;
 import com.clinica.servicios.repository.RecetaRepository;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+/**
+ * Reglas de negocio para los pacientes.
+ */
 @Service
 public class PacienteService {
 
@@ -31,16 +32,13 @@ public class PacienteService {
     }
 
     @Transactional(readOnly = true)
-    public List<Paciente> listar(String q) {
-        if (StringUtils.hasText(q)) {
-            return pacienteRepository.buscar(q.trim());
-        }
+    public List<Paciente> listar() {
         return pacienteRepository.findAllByOrderByApellidosAscNombresAsc();
     }
 
     @Transactional(readOnly = true)
     public List<Paciente> listarTodos() {
-        return pacienteRepository.findAll(Sort.by(Sort.Direction.ASC, "apellidos", "nombres"));
+        return pacienteRepository.findAllByOrderByApellidosAscNombresAsc();
     }
 
     @Transactional(readOnly = true)
@@ -92,10 +90,5 @@ public class PacienteService {
             throw new BusinessException("No se puede eliminar el paciente porque tiene recetas emitidas.");
         }
         pacienteRepository.delete(paciente);
-    }
-
-    @Transactional(readOnly = true)
-    public long contar() {
-        return pacienteRepository.count();
     }
 }
