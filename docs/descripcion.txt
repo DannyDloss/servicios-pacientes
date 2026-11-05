@@ -1,0 +1,1 @@
+Sistema de gestion de servicios de una clinica. Incluye pacientes, historial del paciente, medicos, citas y recetas impresas.

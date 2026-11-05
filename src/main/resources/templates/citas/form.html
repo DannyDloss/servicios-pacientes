@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::titulo}, ~{::section})}">
+<head>
+    <title th:fragment="titulo">Cita</title>
+</head>
+<body>
+<section>
+    <div class="page-header">
+        <div>
+            <h1 th:text="${modoEdicion} ? 'Editar cita' : 'Nueva cita'">Cita</h1>
+            <p>Selecciona al paciente, el medico y la fecha de atencion.</p>
+        </div>
+        <div class="page-actions">
+            <a th:href="@{/citas}" class="btn btn-ghost">Volver a la agenda</a>
+        </div>
+    </div>
+
+    <form th:action="${modoEdicion} ? @{/citas/{id}(id=${cita.id})} : @{/citas}"
+          th:object="${cita}" method="post" class="form-card">
+        <div class="form-section">
+            <h2>Datos de la cita</h2>
+            <div class="alert alert-error" th:if="${#fields.hasGlobalErrors()}">
+                <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Error</p>
+            </div>
+            <div class="form-grid">
+                <div class="field">
+                    <label for="pacienteSeleccionadoId">Paciente *</label>
+                    <select id="pacienteSeleccionadoId" th:field="*{pacienteSeleccionadoId}">
+                        <option value="">Seleccione un paciente</option>
+                        <option th:each="p : ${pacientes}" th:value="${p.id}"
+                                th:text="${p.nombreCompleto + ' - ' + p.documento}"></option>
+                    </select>
+                    <p class="field-error" th:if="${#fields.hasErrors('pacienteSeleccionadoId')}" th:errors="*{pacienteSeleccionadoId}"></p>
+                </div>
+                <div class="field">
+                    <label for="medicoSeleccionadoId">Medico *</label>
+                    <select id="medicoSeleccionadoId" th:field="*{medicoSeleccionadoId}">
+                        <option value="">Seleccione un medico</option>
+                        <option th:each="m : ${medicos}" th:value="${m.id}"
+                                th:text="${m.nombreConEspecialidad}"></option>
+                    </select>
+                    <p class="field-error" th:if="${#fields.hasErrors('medicoSeleccionadoId')}" th:errors="*{medicoSeleccionadoId}"></p>
+                </div>
+                <div class="field">
+                    <label for="fechaHora">Fecha y hora *</label>
+                    <input type="datetime-local" id="fechaHora" th:field="*{fechaHora}" step="60">
+                    <p class="field-error" th:if="${#fields.hasErrors('fechaHora')}" th:errors="*{fechaHora}"></p>
+                </div>
+                <div class="field">
+                    <label for="motivo">Motivo de consulta *</label>
+                    <input type="text" id="motivo" th:field="*{motivo}" maxlength="255" placeholder="Motivo de la cita">
+                    <p class="field-error" th:if="${#fields.hasErrors('motivo')}" th:errors="*{motivo}"></p>
+                </div>
+                <div class="field field-full">
+                    <label for="observaciones">Observaciones</label>
+                    <textarea id="observaciones" th:field="*{observaciones}" rows="4"
+                              placeholder="Indicaciones adicionales para la atencion"></textarea>
+                    <p class="field-error" th:if="${#fields.hasErrors('observaciones')}" th:errors="*{observaciones}"></p>
+                </div>
+            </div>
+            <p class="muted" th:unless="${modoEdicion}">
+                La cita se registrara en estado Programada. Podras atenderla o cancelarla desde su detalle.
+            </p>
+        </div>
+
+        <div class="form-actions">
+            <a th:href="@{/citas}" class="btn btn-ghost">Cancelar</a>
+            <button type="submit" class="btn btn-primary"
+                    th:text="${modoEdicion} ? 'Guardar cambios' : 'Registrar cita'">Guardar</button>
+        </div>
+    </form>
+</section>
+</body>
+</html>

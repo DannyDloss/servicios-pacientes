@@ -1,0 +1,14 @@
+target/
+mysql-data/
+mysql-logs/
+.logs/
+config/local.properties
+.env
+*.log
+*.pid
+
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db

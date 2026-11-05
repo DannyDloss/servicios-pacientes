@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::titulo}, ~{::section})}">
+<head>
+    <title th:fragment="titulo">Pacientes</title>
+</head>
+<body>
+<section>
+    <div class="page-header">
+        <div>
+            <h1>Pacientes</h1>
+            <p>Administra los datos personales, contacto y antecedentes medicos.</p>
+        </div>
+        <div class="page-actions">
+            <a th:href="@{/pacientes/nuevo}" class="btn btn-primary">Nuevo paciente</a>
+        </div>
+    </div>
+
+    <form th:action="@{/pacientes}" method="get" class="filter-bar">
+        <input type="search" name="q" th:value="${q}" placeholder="Buscar por nombre, apellido o documento">
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+        <a th:href="@{/pacientes}" class="btn btn-ghost">Limpiar</a>
+    </form>
+
+    <div class="panel">
+        <div class="table-wrap" th:if="${!#lists.isEmpty(pacientes)}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Documento</th>
+                    <th>Paciente</th>
+                    <th>Edad</th>
+                    <th>Contacto</th>
+                    <th>Sangre</th>
+                    <th class="actions-col">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${pacientes}">
+                    <td th:text="${p.documento}">Documento</td>
+                    <td>
+                        <a th:href="@{/pacientes/{id}(id=${p.id})}" class="table-link"
+                           th:text="${p.nombreCompleto}">Paciente</a>
+                        <small class="block muted" th:text="${p.email}">Correo</small>
+                    </td>
+                    <td th:text="${p.edad}">Edad</td>
+                    <td>
+                        <span th:text="${p.telefono}">Telefono</span>
+                        <small class="block muted" th:text="${p.sexoTexto}">Sexo</small>
+                    </td>
+                    <td>
+                        <span class="badge badge-neutro" th:text="${p.tipoSangre ?: '-'}">O+</span>
+                    </td>
+                    <td class="actions-col">
+                        <a th:href="@{/pacientes/{id}(id=${p.id})}" class="btn btn-sm btn-ghost">Ver</a>
+                        <a th:href="@{/pacientes/{id}/editar(id=${p.id})}" class="btn btn-sm btn-secondary">Editar</a>
+                        <form th:action="@{/pacientes/{id}/eliminar(id=${p.id})}" method="post" class="inline-form">
+                            <button type="submit" class="btn btn-sm btn-danger"
+                                    data-confirm="¿Eliminar este paciente? Esta accion no se puede deshacer.">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="empty-state" th:if="${#lists.isEmpty(pacientes)}">
+            <strong>No se encontraron pacientes</strong>
+            <p>Registra el primer paciente o cambia el criterio de busqueda.</p>
+            <a th:href="@{/pacientes/nuevo}" class="btn btn-primary">Nuevo paciente</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>

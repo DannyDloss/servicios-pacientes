@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::titulo}, ~{::section})}">
+<head>
+    <title th:fragment="titulo">Detalle de historial</title>
+</head>
+<body>
+<section>
+    <div class="page-header">
+        <div>
+            <span class="eyebrow">Historial clinico</span>
+            <h1 th:text="${historial.fechaConsultaTexto}">Fecha</h1>
+            <p>
+                <span th:text="${historial.paciente.nombreCompleto}">Paciente</span>
+                · <span th:text="${historial.medico.nombreCompleto}">Medico</span>
+            </p>
+        </div>
+        <div class="page-actions">
+            <a th:href="@{/historial}" class="btn btn-ghost">Volver</a>
+            <a th:href="@{/historial/{id}/editar(id=${historial.id})}" class="btn btn-secondary">Editar</a>
+            <a th:href="@{/recetas/nueva(historialId=${historial.id})}" class="btn btn-primary">Emitir receta</a>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <section class="panel">
+            <div class="panel-header"><h2>Paciente</h2></div>
+            <dl class="detail-list">
+                <div>
+                    <dt>Nombre</dt>
+                    <dd>
+                        <a th:href="@{/pacientes/{id}(id=${historial.paciente.id})}" class="table-link"
+                           th:text="${historial.paciente.nombreCompleto}">Paciente</a>
+                    </dd>
+                </div>
+                <div><dt>Documento</dt><dd th:text="${historial.paciente.documento}">-</dd></div>
+                <div><dt>Edad</dt><dd th:text="${historial.paciente.edad}">-</dd></div>
+                <div><dt>Alergias</dt><dd th:text="${historial.paciente.alergias ?: 'Ninguna'}">-</dd></div>
+            </dl>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header"><h2>Medico responsable</h2></div>
+            <dl class="detail-list">
+                <div><dt>Nombre</dt><dd th:text="${historial.medico.nombreCompleto}">-</dd></div>
+                <div><dt>Especialidad</dt><dd th:text="${historial.medico.especialidad}">-</dd></div>
+                <div><dt>Colegiatura</dt><dd th:text="${historial.medico.colegiatura}">-</dd></div>
+                <div>
+                    <dt>Cita vinculada</dt>
+                    <dd>
+                        <a th:if="${historial.cita != null}" th:href="@{/citas/{id}(id=${historial.cita.id})}"
+                           class="table-link" th:text="${historial.cita.fechaHoraTexto}">Cita</a>
+                        <span th:if="${historial.cita == null}" class="muted">Sin cita vinculada</span>
+                    </dd>
+                </div>
+            </dl>
+        </section>
+
+        <section class="panel panel-wide">
+            <div class="panel-header"><h2>Signos vitales</h2></div>
+            <div class="vitals-grid">
+                <div class="vital-card"><span>Peso</span><strong th:text="${historial.peso != null ? historial.peso + ' kg' : '-'}">-</strong></div>
+                <div class="vital-card"><span>Talla</span><strong th:text="${historial.talla != null ? historial.talla + ' m' : '-'}">-</strong></div>
+                <div class="vital-card"><span>Presion arterial</span><strong th:text="${historial.presionArterial ?: '-'}">-</strong></div>
+                <div class="vital-card"><span>Temperatura</span><strong th:text="${historial.temperatura != null ? historial.temperatura + ' °C' : '-'}">-</strong></div>
+                <div class="vital-card"><span>Frecuencia cardiaca</span><strong th:text="${historial.frecuenciaCardiaca != null ? historial.frecuenciaCardiaca + ' lpm' : '-'}">-</strong></div>
+            </div>
+        </section>
+
+        <section class="panel panel-wide">
+            <div class="panel-header"><h2>Detalle de la consulta</h2></div>
+            <dl class="detail-list detail-list-block">
+                <div><dt>Motivo de consulta</dt><dd th:text="${historial.motivoConsulta}">-</dd></div>
+                <div><dt>Diagnostico</dt><dd th:text="${historial.diagnostico}">-</dd></div>
+                <div><dt>Tratamiento</dt><dd th:text="${historial.tratamiento ?: 'No registrado'}">-</dd></div>
+                <div><dt>Notas</dt><dd th:text="${historial.notas ?: 'Sin notas adicionales'}">-</dd></div>
+            </dl>
+        </section>
+    </div>
+
+    <section class="panel">
+        <div class="empty-state compact">
+            <strong>Receta medica</strong>
+            <p>Genera una receta para esta atencion y descargala en PDF.</p>
+            <a th:href="@{/recetas/nueva(historialId=${historial.id})}" class="btn btn-primary">Emitir receta</a>
+        </div>
+    </section>
+</section>
+</body>
+</html>

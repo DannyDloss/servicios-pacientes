@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Accion no permitida | Clinica San Rafael</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="error-page">
+<div class="error-card">
+    <span class="error-code">405</span>
+    <h1>Accion no permitida</h1>
+    <p th:text="${mensaje ?: 'La accion solicitada no esta disponible para esta ruta.'}">Accion no permitida</p>
+    <a th:href="@{/}" class="btn btn-primary">Volver al dashboard</a>
+</div>
+</body>
+</html>

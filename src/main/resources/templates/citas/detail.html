@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::titulo}, ~{::section})}">
+<head>
+    <title th:fragment="titulo">Detalle de cita</title>
+</head>
+<body>
+<section>
+    <div class="page-header">
+        <div>
+            <span class="eyebrow">Cita medica</span>
+            <h1 th:text="${cita.fechaHoraTexto}">Fecha</h1>
+            <p>
+                <span class="badge" th:classappend="${cita.estado.claseCss}" th:text="${cita.estado.etiqueta}">Estado</span>
+                <span class="muted"> · </span>
+                <span th:text="${cita.motivo}">Motivo</span>
+            </p>
+        </div>
+        <div class="page-actions">
+            <a th:href="@{/citas}" class="btn btn-ghost">Volver</a>
+            <a th:href="@{/citas/{id}/editar(id=${cita.id})}" class="btn btn-secondary">Editar</a>
+            <a th:if="${cita.estado.name() == 'PROGRAMADA'}"
+               th:href="@{/historial/nuevo(citaId=${cita.id})}" class="btn btn-primary">Registrar atencion</a>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <section class="panel">
+            <div class="panel-header"><h2>Paciente</h2></div>
+            <dl class="detail-list">
+                <div>
+                    <dt>Nombre</dt>
+                    <dd>
+                        <a th:href="@{/pacientes/{id}(id=${cita.paciente.id})}" class="table-link"
+                           th:text="${cita.paciente.nombreCompleto}">Paciente</a>
+                    </dd>
+                </div>
+                <div><dt>Documento</dt><dd th:text="${cita.paciente.documento}">-</dd></div>
+                <div><dt>Telefono</dt><dd th:text="${cita.paciente.telefono ?: 'No registrado'}">-</dd></div>
+                <div><dt>Alergias</dt><dd th:text="${cita.paciente.alergias ?: 'Ninguna registrada'}">-</dd></div>
+            </dl>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header"><h2>Medico</h2></div>
+            <dl class="detail-list">
+                <div><dt>Nombre</dt><dd th:text="${cita.medico.nombreCompleto}">-</dd></div>
+                <div><dt>Especialidad</dt><dd th:text="${cita.medico.especialidad}">-</dd></div>
+                <div><dt>Colegiatura</dt><dd th:text="${cita.medico.colegiatura}">-</dd></div>
+                <div><dt>Horario</dt><dd th:text="${cita.medico.horario ?: 'No definido'}">-</dd></div>
+            </dl>
+        </section>
+
+        <section class="panel panel-wide">
+            <div class="panel-header"><h2>Detalle de la programacion</h2></div>
+            <dl class="detail-list detail-list-inline">
+                <div><dt>Fecha y hora</dt><dd th:text="${cita.fechaHoraTexto}">-</dd></div>
+                <div><dt>Estado</dt><dd th:text="${cita.estado.etiqueta}">-</dd></div>
+                <div><dt>Motivo</dt><dd th:text="${cita.motivo}">-</dd></div>
+                <div><dt>Observaciones</dt><dd th:text="${cita.observaciones ?: 'Sin observaciones'}">-</dd></div>
+            </dl>
+        </section>
+    </div>
+
+    <section class="panel" th:if="${historial != null}">
+        <div class="panel-header">
+            <div>
+                <h2>Historial de la atencion</h2>
+                <p>Registro clinico generado a partir de esta cita.</p>
+            </div>
+            <a th:href="@{/historial/{id}(id=${historial.id})}" class="link">Ver historial</a>
+        </div>
+        <div class="summary-box">
+            <p><strong>Diagnostico:</strong> <span th:text="${historial.diagnostico}">-</span></p>
+            <p><strong>Tratamiento:</strong> <span th:text="${historial.tratamiento ?: 'No registrado'}">-</span></p>
+            <p><strong>Fecha de consulta:</strong> <span th:text="${historial.fechaConsultaTexto}">-</span></p>
+        </div>
+        <div class="form-actions form-actions-left">
+            <a th:href="@{/recetas/nueva(historialId=${historial.id})}" class="btn btn-primary">Emitir receta</a>
+        </div>
+    </section>
+
+    <section class="panel" th:if="${historial == null and cita.estado.name() == 'PROGRAMADA'}">
+        <div class="empty-state compact">
+            <strong>Atencion pendiente</strong>
+            <p>Registra el historial clinico para marcar esta cita como atendida.</p>
+            <a th:href="@{/historial/nuevo(citaId=${cita.id})}" class="btn btn-primary">Registrar atencion</a>
+        </div>
+    </section>
+
+    <div class="danger-zone" th:if="${cita.estado.name() == 'PROGRAMADA'}">
+        <div>
+            <strong>Cancelar cita</strong>
+            <p>La cita quedara registrada como cancelada y no podra marcarse como atendida.</p>
+        </div>
+        <form th:action="@{/citas/{id}/cancelar(id=${cita.id})}" method="post">
+            <button type="submit" class="btn btn-danger"
+                    data-confirm="¿Cancelar esta cita?">Cancelar cita</button>
+        </form>
+    </div>
+
+    <section class="panel" th:if="${cita.estado.name() == 'CANCELADA'}">
+        <div class="empty-state compact">
+            <strong>Cita cancelada</strong>
+            <p>Puedes reactivarla para volver a incluirla en la agenda.</p>
+            <form th:action="@{/citas/{id}/estado(id=${cita.id})}" method="post">
+                <input type="hidden" name="estado" value="PROGRAMADA">
+                <button type="submit" class="btn btn-secondary">Reactivar cita</button>
+            </form>
+        </div>
+    </section>
+</section>
+</body>
+</html>

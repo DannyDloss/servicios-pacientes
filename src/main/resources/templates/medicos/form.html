@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::titulo}, ~{::section})}">
+<head>
+    <title th:fragment="titulo">Medico</title>
+</head>
+<body>
+<section>
+    <div class="page-header">
+        <div>
+            <h1 th:text="${modoEdicion} ? 'Editar medico' : 'Nuevo medico'">Medico</h1>
+            <p>Registra los datos profesionales y el horario de atencion.</p>
+        </div>
+        <div class="page-actions">
+            <a th:href="@{/medicos}" class="btn btn-ghost">Volver al listado</a>
+        </div>
+    </div>
+
+    <form th:action="${modoEdicion} ? @{/medicos/{id}(id=${medico.id})} : @{/medicos}"
+          th:object="${medico}" method="post" class="form-card">
+        <div class="form-section">
+            <h2>Datos profesionales</h2>
+            <div class="form-grid">
+                <div class="field">
+                    <label for="nombres">Nombres *</label>
+                    <input type="text" id="nombres" th:field="*{nombres}" maxlength="80" placeholder="Nombres completos">
+                    <p class="field-error" th:if="${#fields.hasErrors('nombres')}" th:errors="*{nombres}"></p>
+                </div>
+                <div class="field">
+                    <label for="apellidos">Apellidos *</label>
+                    <input type="text" id="apellidos" th:field="*{apellidos}" maxlength="80" placeholder="Apellidos completos">
+                    <p class="field-error" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></p>
+                </div>
+                <div class="field">
+                    <label for="especialidad">Especialidad *</label>
+                    <input type="text" id="especialidad" th:field="*{especialidad}" maxlength="80" placeholder="Ej. Medicina General">
+                    <p class="field-error" th:if="${#fields.hasErrors('especialidad')}" th:errors="*{especialidad}"></p>
+                </div>
+                <div class="field">
+                    <label for="colegiatura">Colegiatura / CMP *</label>
+                    <input type="text" id="colegiatura" th:field="*{colegiatura}" maxlength="30" placeholder="Ej. CMP-045678">
+                    <p class="field-error" th:if="${#fields.hasErrors('colegiatura')}" th:errors="*{colegiatura}"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Contacto y disponibilidad</h2>
+            <div class="form-grid">
+                <div class="field">
+                    <label for="telefono">Telefono</label>
+                    <input type="text" id="telefono" th:field="*{telefono}" maxlength="20" placeholder="Numero de contacto">
+                    <p class="field-error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></p>
+                </div>
+                <div class="field">
+                    <label for="email">Correo electronico</label>
+                    <input type="email" id="email" th:field="*{email}" maxlength="120" placeholder="correo@clinica.com">
+                    <p class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                </div>
+                <div class="field field-full">
+                    <label for="horario">Horario de atencion</label>
+                    <input type="text" id="horario" th:field="*{horario}" maxlength="120" placeholder="Ej. Lunes a viernes 08:00 - 14:00">
+                    <p class="field-error" th:if="${#fields.hasErrors('horario')}" th:errors="*{horario}"></p>
+                </div>
+                <div class="field field-full">
+                    <label class="checkbox-label">
+                        <input type="checkbox" th:field="*{activo}">
+                        Medico activo para nuevas citas
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a th:href="@{/medicos}" class="btn btn-ghost">Cancelar</a>
+            <button type="submit" class="btn btn-primary"
+                    th:text="${modoEdicion} ? 'Guardar cambios' : 'Registrar medico'">Guardar</button>
+        </div>
+    </form>
+</section>
+</body>
+</html>

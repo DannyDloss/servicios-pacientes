@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::titulo}, ~{::section})}">
+<head>
+    <title th:fragment="titulo">Recetas</title>
+</head>
+<body>
+<section>
+    <div class="page-header">
+        <div>
+            <h1>Recetas medicas</h1>
+            <p>Emite, consulta y descarga las recetas en formato PDF.</p>
+        </div>
+        <div class="page-actions">
+            <a th:href="@{/recetas/nueva}" class="btn btn-primary">Nueva receta</a>
+        </div>
+    </div>
+
+    <form th:action="@{/recetas}" method="get" class="filter-bar">
+        <input type="search" name="q" th:value="${q}" placeholder="Buscar por paciente, documento o medico">
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+        <a th:href="@{/recetas}" class="btn btn-ghost">Limpiar</a>
+    </form>
+
+    <div class="panel">
+        <div class="table-wrap" th:if="${!#lists.isEmpty(recetas)}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Fecha</th>
+                    <th>Paciente</th>
+                    <th>Medico</th>
+                    <th>Items</th>
+                    <th>Estado</th>
+                    <th class="actions-col">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="r : ${recetas}">
+                    <td>
+                        <a th:href="@{/recetas/{id}(id=${r.id})}" class="table-link" th:text="${r.codigo}">REC</a>
+                    </td>
+                    <td th:text="${r.fechaEmisionTexto}">Fecha</td>
+                    <td>
+                        <span th:text="${r.paciente.nombreCompleto}">Paciente</span>
+                        <small class="block muted" th:text="${r.paciente.documento}">Documento</small>
+                    </td>
+                    <td>
+                        <span th:text="${r.medico.nombreCompleto}">Medico</span>
+                        <small class="block muted" th:text="${r.medico.especialidad}">Especialidad</small>
+                    </td>
+                    <td><span class="badge badge-neutro" th:text="${r.cantidadItems}">0</span></td>
+                    <td><span class="badge" th:classappend="${r.estado.claseCss}" th:text="${r.estado.etiqueta}">Estado</span></td>
+                    <td class="actions-col">
+                        <a th:href="@{/recetas/{id}(id=${r.id})}" class="btn btn-sm btn-ghost">Ver</a>
+                        <a th:href="@{/recetas/{id}/pdf(id=${r.id})}" class="btn btn-sm btn-secondary">PDF</a>
+                        <form th:if="${r.estado.name() == 'EMITIDA'}"
+                              th:action="@{/recetas/{id}/anular(id=${r.id})}" method="post" class="inline-form">
+                            <button type="submit" class="btn btn-sm btn-danger"
+                                    data-confirm="¿Anular esta receta?">Anular</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="empty-state" th:if="${#lists.isEmpty(recetas)}">
+            <strong>No se encontraron recetas</strong>
+            <p>Emite una receta desde un historial clinico.</p>
+            <a th:href="@{/recetas/nueva}" class="btn btn-primary">Nueva receta</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>

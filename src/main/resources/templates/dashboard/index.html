@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::titulo}, ~{::section})}">
+<head>
+    <title th:fragment="titulo">Dashboard</title>
+</head>
+<body>
+<section>
+    <div class="page-header">
+        <div>
+            <h1>Buenos dias</h1>
+            <p>Resumen operativo de la clinica, citas y actividad reciente.</p>
+        </div>
+        <div class="page-actions">
+            <a th:href="@{/citas}" class="btn btn-secondary">Ver agenda</a>
+            <a th:href="@{/recetas/nueva}" class="btn btn-primary">Emitir receta</a>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <article class="stat-card">
+            <span class="stat-label">Pacientes</span>
+            <strong th:text="${totalPacientes}">0</strong>
+            <small>Registrados en el sistema</small>
+        </article>
+        <article class="stat-card">
+            <span class="stat-label">Medicos</span>
+            <strong th:text="${totalMedicos}">0</strong>
+            <small>Profesionales de la clinica</small>
+        </article>
+        <article class="stat-card stat-accent">
+            <span class="stat-label">Citas de hoy</span>
+            <strong th:text="${citasHoy}">0</strong>
+            <small>Atenciones programadas</small>
+        </article>
+        <article class="stat-card">
+            <span class="stat-label">Citas programadas</span>
+            <strong th:text="${citasProgramadas}">0</strong>
+            <small>Pendientes de atencion</small>
+        </article>
+        <article class="stat-card">
+            <span class="stat-label">Recetas emitidas</span>
+            <strong th:text="${recetasEmitidas}">0</strong>
+            <small>Documentos disponibles</small>
+        </article>
+    </div>
+
+    <div class="dashboard-grid">
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Proximas citas</h2>
+                    <p>Agenda ordenada por fecha y hora.</p>
+                </div>
+                <a th:href="@{/citas}" class="link">Ver todas</a>
+            </div>
+            <div class="table-wrap" th:if="${!#lists.isEmpty(proximasCitas)}">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Paciente</th>
+                        <th>Medico</th>
+                        <th>Estado</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cita : ${proximasCitas}">
+                        <td>
+                            <a th:href="@{/citas/{id}(id=${cita.id})}" class="table-link"
+                               th:text="${cita.fechaHoraTexto}">Fecha</a>
+                        </td>
+                        <td th:text="${cita.paciente.nombreCompleto}">Paciente</td>
+                        <td>
+                            <span th:text="${cita.medico.nombreCompleto}">Medico</span>
+                            <small class="block muted" th:text="${cita.medico.especialidad}">Especialidad</small>
+                        </td>
+                        <td>
+                            <span class="badge" th:classappend="${cita.estado.claseCss}"
+                                  th:text="${cita.estado.etiqueta}">Estado</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="empty-state" th:if="${#lists.isEmpty(proximasCitas)}">
+                <strong>Sin citas proximas</strong>
+                <p>Agenda una nueva cita para comenzar.</p>
+                <a th:href="@{/citas/nueva}" class="btn btn-primary">Agendar cita</a>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Historial reciente</h2>
+                    <p>Ultimas atenciones registradas.</p>
+                </div>
+                <a th:href="@{/historial}" class="link">Ver historial</a>
+            </div>
+            <div class="activity-list" th:if="${!#lists.isEmpty(historialesRecientes)}">
+                <a th:each="h : ${historialesRecientes}" th:href="@{/historial/{id}(id=${h.id})}" class="activity-item">
+                    <span class="activity-dot"></span>
+                    <div>
+                        <strong th:text="${h.paciente.nombreCompleto}">Paciente</strong>
+                        <span th:text="${h.diagnosticoResumen}">Diagnostico</span>
+                        <small th:text="${h.fechaConsultaTexto}">Fecha</small>
+                    </div>
+                </a>
+            </div>
+            <div class="empty-state" th:if="${#lists.isEmpty(historialesRecientes)}">
+                <strong>Sin atenciones registradas</strong>
+                <p>Registra una atencion desde una cita atendida.</p>
+            </div>
+        </section>
+    </div>
+
+    <div class="quick-grid">
+        <a th:href="@{/pacientes/nuevo}" class="quick-card">
+            <strong>Registrar paciente</strong>
+            <span>Datos personales, contacto y antecedentes.</span>
+        </a>
+        <a th:href="@{/medicos/nuevo}" class="quick-card">
+            <strong>Registrar medico</strong>
+            <span>Especialidad, colegiatura y horario.</span>
+        </a>
+        <a th:href="@{/citas/nueva}" class="quick-card">
+            <strong>Agendar cita</strong>
+            <span>Asigna paciente, medico y fecha.</span>
+        </a>
+        <a th:href="@{/recetas/nueva}" class="quick-card">
+            <strong>Emitir receta</strong>
+            <span>Genera una receta lista para descargar en PDF.</span>
+        </a>
+    </div>
+</section>
+</body>
+</html>

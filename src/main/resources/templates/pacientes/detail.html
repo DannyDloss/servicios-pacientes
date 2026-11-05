@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::titulo}, ~{::section})}">
+<head>
+    <title th:fragment="titulo">Detalle de paciente</title>
+</head>
+<body>
+<section>
+    <div class="page-header">
+        <div>
+            <span class="eyebrow">Ficha del paciente</span>
+            <h1 th:text="${paciente.nombreCompleto}">Paciente</h1>
+            <p>
+                Documento <span th:text="${paciente.documento}">documento</span>
+                · <span th:text="${paciente.edad}">0</span> años
+                · <span th:text="${paciente.sexoTexto}">sexo</span>
+            </p>
+        </div>
+        <div class="page-actions">
+            <a th:href="@{/pacientes}" class="btn btn-ghost">Volver</a>
+            <a th:href="@{/citas/nueva(pacienteId=${paciente.id})}" class="btn btn-secondary">Agendar cita</a>
+            <a th:href="@{/pacientes/{id}/editar(id=${paciente.id})}" class="btn btn-primary">Editar</a>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Datos personales</h2>
+            </div>
+            <dl class="detail-list">
+                <div><dt>Documento</dt><dd th:text="${paciente.documento}">-</dd></div>
+                <div><dt>Fecha de nacimiento</dt><dd th:text="${paciente.fechaNacimientoTexto}">-</dd></div>
+                <div><dt>Sexo</dt><dd th:text="${paciente.sexoTexto}">-</dd></div>
+                <div><dt>Tipo de sangre</dt><dd th:text="${paciente.tipoSangre ?: 'No registrado'}">-</dd></div>
+            </dl>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Contacto</h2>
+            </div>
+            <dl class="detail-list">
+                <div><dt>Telefono</dt><dd th:text="${paciente.telefono ?: 'No registrado'}">-</dd></div>
+                <div><dt>Correo</dt><dd th:text="${paciente.email ?: 'No registrado'}">-</dd></div>
+                <div><dt>Direccion</dt><dd th:text="${paciente.direccion ?: 'No registrada'}">-</dd></div>
+            </dl>
+        </section>
+
+        <section class="panel panel-wide">
+            <div class="panel-header">
+                <h2>Informacion clinica</h2>
+            </div>
+            <div class="alert alert-info" th:if="${!#strings.isEmpty(paciente.alergias)}">
+                <strong>Alergias / observaciones:</strong>
+                <span th:text="${paciente.alergias}">-</span>
+            </div>
+            <p class="muted" th:if="${#strings.isEmpty(paciente.alergias)}">Sin alergias ni observaciones registradas.</p>
+        </section>
+    </div>
+
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <h2>Citas del paciente</h2>
+                <p>Historial de programaciones y atenciones.</p>
+            </div>
+            <a th:href="@{/citas/nueva(pacienteId=${paciente.id})}" class="link">Agendar nueva</a>
+        </div>
+        <div class="table-wrap" th:if="${!#lists.isEmpty(citas)}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Fecha y hora</th>
+                    <th>Medico</th>
+                    <th>Motivo</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c : ${citas}">
+                    <td th:text="${c.fechaHoraTexto}">Fecha</td>
+                    <td th:text="${c.medico.nombreCompleto}">Medico</td>
+                    <td th:text="${c.motivo}">Motivo</td>
+                    <td><span class="badge" th:classappend="${c.estado.claseCss}" th:text="${c.estado.etiqueta}">Estado</span></td>
+                    <td><a th:href="@{/citas/{id}(id=${c.id})}" class="btn btn-sm btn-ghost">Ver</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="muted" th:if="${#lists.isEmpty(citas)}">El paciente aun no tiene citas registradas.</p>
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <h2>Historial clinico</h2>
+                <p>Atenciones y diagnosticos registrados.</p>
+            </div>
+            <a th:href="@{/historial/nuevo(pacienteId=${paciente.id})}" class="link">Registrar atencion</a>
+        </div>
+        <div class="table-wrap" th:if="${!#lists.isEmpty(historiales)}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Medico</th>
+                    <th>Diagnostico</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="h : ${historiales}">
+                    <td th:text="${h.fechaConsultaTexto}">Fecha</td>
+                    <td th:text="${h.medico.nombreCompleto}">Medico</td>
+                    <td th:text="${h.diagnosticoResumen}">Diagnostico</td>
+                    <td><a th:href="@{/historial/{id}(id=${h.id})}" class="btn btn-sm btn-ghost">Ver</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="muted" th:if="${#lists.isEmpty(historiales)}">El paciente aun no tiene historial clinico.</p>
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <h2>Recetas emitidas</h2>
+                <p>Documentos disponibles para descargar en PDF.</p>
+            </div>
+        </div>
+        <div class="table-wrap" th:if="${!#lists.isEmpty(recetas)}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Fecha</th>
+                    <th>Medico</th>
+                    <th>Items</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="r : ${recetas}">
+                    <td><a th:href="@{/recetas/{id}(id=${r.id})}" class="table-link" th:text="${r.codigo}">REC</a></td>
+                    <td th:text="${r.fechaEmisionTexto}">Fecha</td>
+                    <td th:text="${r.medico.nombreCompleto}">Medico</td>
+                    <td th:text="${r.cantidadItems}">0</td>
+                    <td><span class="badge" th:classappend="${r.estado.claseCss}" th:text="${r.estado.etiqueta}">Estado</span></td>
+                    <td>
+                        <a th:href="@{/recetas/{id}/pdf(id=${r.id})}" class="btn btn-sm btn-secondary">PDF</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="muted" th:if="${#lists.isEmpty(recetas)}">El paciente aun no tiene recetas emitidas.</p>
+    </section>
+
+    <div class="danger-zone">
+        <div>
+            <strong>Eliminar paciente</strong>
+            <p>Solo se puede eliminar si no tiene citas, historial ni recetas.</p>
+        </div>
+        <form th:action="@{/pacientes/{id}/eliminar(id=${paciente.id})}" method="post">
+            <button type="submit" class="btn btn-danger"
+                    data-confirm="¿Eliminar este paciente? Esta accion no se puede deshacer.">
+                Eliminar paciente
+            </button>
+        </form>
+    </div>
+</section>
+</body>
+</html>

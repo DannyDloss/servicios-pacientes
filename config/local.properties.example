@@ -1,0 +1,5 @@
+# Copie este archivo como config/local.properties y complete los valores.
+# config/local.properties esta ignorado por Git y no debe subirse.
+spring.datasource.username=clinica_user
+spring.datasource.password=CAMBIA_ESTA_PASSWORD
+db.root.password=CAMBIA_ESTA_PASSWORD

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::titulo}, ~{::section})}">
+<head>
+    <title th:fragment="titulo">Citas</title>
+</head>
+<body>
+<section>
+    <div class="page-header">
+        <div>
+            <h1>Citas</h1>
+            <p>Agenda, reprograma y controla el estado de las atenciones.</p>
+        </div>
+        <div class="page-actions">
+            <a th:href="@{/citas/nueva}" class="btn btn-primary">Nueva cita</a>
+        </div>
+    </div>
+
+    <form th:action="@{/citas}" method="get" class="filter-bar">
+        <input type="date" name="fecha" th:value="${fecha}">
+        <select name="estado">
+            <option value="">Todos los estados</option>
+            <option th:each="e : ${estados}" th:value="${e}"
+                    th:selected="${estadoSeleccionado != null and estadoSeleccionado == e}"
+                    th:text="${e.etiqueta}"></option>
+        </select>
+        <select name="medicoId">
+            <option value="">Todos los medicos</option>
+            <option th:each="m : ${medicos}" th:value="${m.id}"
+                    th:selected="${medicoSeleccionado != null and medicoSeleccionado == m.id}"
+                    th:text="${m.nombreConEspecialidad}"></option>
+        </select>
+        <button type="submit" class="btn btn-secondary">Filtrar</button>
+        <a th:href="@{/citas}" class="btn btn-ghost">Limpiar</a>
+    </form>
+
+    <div class="panel">
+        <div class="table-wrap" th:if="${!#lists.isEmpty(citas)}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Fecha y hora</th>
+                    <th>Paciente</th>
+                    <th>Medico</th>
+                    <th>Motivo</th>
+                    <th>Estado</th>
+                    <th class="actions-col">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c : ${citas}">
+                    <td>
+                        <a th:href="@{/citas/{id}(id=${c.id})}" class="table-link"
+                           th:text="${c.fechaHoraTexto}">Fecha</a>
+                    </td>
+                    <td>
+                        <span th:text="${c.paciente.nombreCompleto}">Paciente</span>
+                        <small class="block muted" th:text="${c.paciente.documento}">Documento</small>
+                    </td>
+                    <td>
+                        <span th:text="${c.medico.nombreCompleto}">Medico</span>
+                        <small class="block muted" th:text="${c.medico.especialidad}">Especialidad</small>
+                    </td>
+                    <td th:text="${c.motivo}">Motivo</td>
+                    <td><span class="badge" th:classappend="${c.estado.claseCss}" th:text="${c.estado.etiqueta}">Estado</span></td>
+                    <td class="actions-col">
+                        <a th:href="@{/citas/{id}(id=${c.id})}" class="btn btn-sm btn-ghost">Ver</a>
+                        <a th:href="@{/citas/{id}/editar(id=${c.id})}" class="btn btn-sm btn-secondary">Editar</a>
+                        <a th:if="${c.estado.name() == 'PROGRAMADA'}"
+                           th:href="@{/historial/nuevo(citaId=${c.id})}" class="btn btn-sm btn-primary">Atender</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="empty-state" th:if="${#lists.isEmpty(citas)}">
+            <strong>No hay citas para los filtros seleccionados</strong>
+            <p>Cambia los filtros o agenda una nueva cita.</p>
+            <a th:href="@{/citas/nueva}" class="btn btn-primary">Nueva cita</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>
